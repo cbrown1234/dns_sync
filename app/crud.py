@@ -37,10 +37,12 @@ def get_dns_records(
 def get_soft_deleted_dns_records(
     db: Session, owner: str = sentinel
 ) -> List[models.DNSRecord]:
-    if owner is not sentinel:
-        return db.query(models.DNSRecord).filter_by(owner=owner, to_delete=True).all()
+    q = db.query(models.DNSRecord)
 
-    return db.query(models.DNSRecord).filter_by(to_delete=True).all()
+    if owner is not sentinel:
+        q = q.filter_by(owner=owner)
+
+    return q.filter_by(to_delete=True).all()
 
 
 def get_dns_by_name(db: Session, dns_name: str) -> models.DNSRecord:
