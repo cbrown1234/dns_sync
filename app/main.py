@@ -1,4 +1,5 @@
 import logging
+from pathlib import Path
 from typing import List, Union
 
 import httpx
@@ -29,10 +30,15 @@ def write_dns_to_file(db: Session):
         schemas.DNSRecordDB.from_orm(record).json() for record in db_records
     ]
 
-    # make file name an env var
+    Path(settings.BACKUP_FILE).parent.mkdir(parents=True, exist_ok=True)
     with open(settings.BACKUP_FILE, 'w') as f:
         f.write('\n'.join(json_records))
         f.write('\n')
+
+
+@app.get('/')
+def status():
+    return {'status': 'Running'}
 
 
 @app.on_event('startup')
