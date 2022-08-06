@@ -2,8 +2,9 @@ FROM tiangolo/uvicorn-gunicorn:python3.8-alpine3.10 as base
 
 FROM base as build
 RUN apk add --no-cache gcc g++ musl-dev
+RUN pip install pip-tools
 COPY requirements.txt .
-RUN pip install --user -r requirements.txt
+RUN pip-sync requirements.txt --pip-args "--user"
 
 
 FROM base

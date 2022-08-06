@@ -1,0 +1,5 @@
+-c requirements.txt
+pre-commit
+pytest
+pytest-dotenv
+requests

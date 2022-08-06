@@ -1,0 +1,6 @@
+fastapi
+httpx
+sqlalchemy
+pydantic
+fastapi-utils
+uvicorn[standard]
