@@ -43,6 +43,8 @@ async def get_all_dns_records_cf(client: httpx.AsyncClient):
                 params={'page': page, 'per_page': per_page},
                 auth=DomainAuth(domain),
             )
+            logger.debug(f'{r.json()}')
+            r.raise_for_status()
             page_dns_records = r.json()['result']
             _dns_records_cf.extend(page_dns_records)
 
