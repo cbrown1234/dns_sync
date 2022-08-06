@@ -22,8 +22,8 @@ the domains handled by the application
 
 Developed using Python 3.8
 - Run
-  - `pip install pip-tools`
-  - `pip-sync requirements.txt requirements-dev.txt`
+  - `cargo install just`
+  - `just setup-dev`
 - Run `export DOMAIN_CONFIG='{"my config": "as per config.py"}` and other options in config.py if needed
 - Run `uvicorn app.main:app` optionally include the `--reload` flag
 to watch for changes to the files during dev
