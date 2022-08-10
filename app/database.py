@@ -8,16 +8,15 @@ from sqlalchemy.orm import Session
 from app.config import settings
 
 
-def get_db(db_url=settings.SQLALCHEMY_DATABASE_URL) -> Iterator[Session]:
+def get_db() -> Iterator[Session]:
     """ FastAPI dependency that provides a sqlalchemy session """
-    yield from _get_fastapi_sessionmaker(db_url).get_db()
+    yield from _get_fastapi_sessionmaker().get_db()
 
 
 @lru_cache()
-def _get_fastapi_sessionmaker(
-    db_url=settings.SQLALCHEMY_DATABASE_URL,
-) -> FastAPISessionMaker:
+def _get_fastapi_sessionmaker() -> FastAPISessionMaker:
     """ This function could be replaced with a global variable if preferred """
+    db_url = settings.SQLALCHEMY_DATABASE_URL
     return FastAPISessionMaker(db_url)
 
 
