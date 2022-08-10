@@ -60,7 +60,7 @@ async def get_all_dns_records_cf(client: httpx.AsyncClient):
 
 async def sync_dns_record(
     dns_record_db: DNSRecordDB,
-    dns_record_cf: DNSRecordCloudflare,
+    dns_record_cf: Optional[DNSRecordCloudflare],
     client: httpx.AsyncClient,
 ):
     response_futures = []
@@ -70,7 +70,7 @@ async def sync_dns_record(
             f'DNS Record in DB is marked for deletion but does not exist'
             f' (record: {dns_record_db})'
         )
-    elif dns_record_db.to_delete:
+    elif dns_record_db.to_delete and dns_record_cf is not None:
         if BaseDNSRecord(**dns_record_db.dict()) != BaseDNSRecord(
             **dns_record_cf.dict()
         ):
@@ -122,7 +122,7 @@ async def sync_dns_record(
             )
         except httpx.HTTPStatusError as exc:
             logger.warning(
-                f'Error response {exc.response.status_code}: {exc.response.read()},'
+                f'Error response {exc.response.status_code!r}: {exc.response.read()!r},'
                 f' while doing {exc.request.method!r} {exc.request.url!r} with:'
                 f' {exc.request.read()!r}'
             )

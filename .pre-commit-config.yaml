@@ -26,3 +26,11 @@ repos:
     rev: 3.9.0
     hooks:
     -   id: flake8
+-   repo: local
+    hooks:
+    -   id: mypy
+        name: mypy
+        entry: mypy
+#        args: [.]
+        language: system
+        types: [file, python]

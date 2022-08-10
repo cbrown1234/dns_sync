@@ -51,8 +51,8 @@ async def run_sync_with_cloudflare() -> None:
 
 
 async def sync_with_cloudflare(db: Session):
-    dns_records_db = crud.get_dns_records(db, only_config_domains=True)
-    dns_records_db = [schemas.DNSRecordDB.from_orm(dns) for dns in dns_records_db]
+    dns_records_db_orm = crud.get_dns_records(db, only_config_domains=True)
+    dns_records_db = [schemas.DNSRecordDB.from_orm(dns) for dns in dns_records_db_orm]
     async with httpx.AsyncClient(base_url=cloudflare.BASE_URL) as client:
         await cloudflare.sync_dns_records(dns_records_db, client=client)
 
@@ -89,21 +89,18 @@ def delete_dns_record(
     return {'deleted': True}
 
 
-@app.patch(
-    '/dns-records', response_model=Union[schemas.DNSRecord, List[schemas.DNSRecord]]
-)
+@app.patch('/dns-records', response_model=schemas.DNSRecordOptionalContainer)
 def upsert_dns_record(
     dns_record: Union[schemas.DNSRecord, List[schemas.DNSRecord]],
     background_tasks: BackgroundTasks,
     db: Session = Depends(get_db),
 ):
-    if isinstance(dns_record, list):
-        db_dns_record = crud.upsert_dns_records(db=db, dns_records=dns_record)
-    else:
-        db_dns_record = crud.upsert_dns(db=db, dns_record=dns_record)
-
     background_tasks.add_task(write_dns_to_file, db)
-    return db_dns_record
+
+    if isinstance(dns_record, list):
+        return crud.upsert_dns_records(db=db, dns_records=dns_record)
+    else:
+        return crud.upsert_dns(db=db, dns_record=dns_record)
 
 
 @app.put('/dns-records', response_model=List[schemas.DNSRecord])

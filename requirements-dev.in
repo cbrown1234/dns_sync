@@ -3,3 +3,5 @@ pre-commit
 pytest
 pytest-dotenv
 requests
+mypy
+sqlalchemy[mypy]

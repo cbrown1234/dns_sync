@@ -18,6 +18,10 @@ distlib==0.3.5
     # via virtualenv
 filelock==3.7.1
     # via virtualenv
+greenlet==1.1.2
+    # via
+    #   -c requirements.txt
+    #   sqlalchemy
 identify==2.5.3
     # via pre-commit
 idna==3.3
@@ -26,6 +30,12 @@ idna==3.3
     #   requests
 iniconfig==1.1.1
     # via pytest
+mypy==0.971
+    # via
+    #   -r requirements-dev.in
+    #   sqlalchemy
+mypy-extensions==0.4.3
+    # via mypy
 nodeenv==1.7.0
     # via pre-commit
 packaging==21.3
@@ -56,10 +66,23 @@ pyyaml==6.0
     #   pre-commit
 requests==2.28.1
     # via -r requirements-dev.in
+sqlalchemy[mypy]==1.4.39
+    # via
+    #   -c requirements.txt
+    #   -r requirements-dev.in
+sqlalchemy2-stubs==0.0.2a24
+    # via sqlalchemy
 toml==0.10.2
     # via pre-commit
 tomli==2.0.1
-    # via pytest
+    # via
+    #   mypy
+    #   pytest
+typing-extensions==4.3.0
+    # via
+    #   -c requirements.txt
+    #   mypy
+    #   sqlalchemy2-stubs
 urllib3==1.26.11
     # via requests
 virtualenv==20.16.3

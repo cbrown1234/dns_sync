@@ -35,3 +35,6 @@ addopts = "-ra -q"
 env_files = [
     ".test.env"
 ]
+
+[tool.mypy]
+plugins = "sqlalchemy.ext.mypy.plugin"

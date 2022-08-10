@@ -1,4 +1,5 @@
 from enum import Enum
+from typing import List, Union
 
 from pydantic import BaseModel, validator
 
@@ -62,3 +63,8 @@ class DNSRecordDB(DNSRecord):
 
 class DNSRecordCloudflare(BaseDNSRecord):
     id: str
+
+
+# https://github.com/tiangolo/fastapi/issues/2279#issuecomment-787423592
+class DNSRecordOptionalContainer(BaseModel):
+    __root__: Union[DNSRecord, List[DNSRecord]]
