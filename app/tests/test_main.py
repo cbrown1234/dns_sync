@@ -1,16 +1,9 @@
-from functools import partial
-
-import pytest as pytest
+import pytest
 from fastapi.testclient import TestClient
 
 from app import models
-from app.database import _get_fastapi_sessionmaker, get_db
+from app.database import _get_fastapi_sessionmaker
 from app.main import app
-
-TEST_SQLALCHEMY_DATABASE_URL = 'sqlite:///.test.db?check_same_thread=False'
-
-override_get_db = partial(get_db, db_url=TEST_SQLALCHEMY_DATABASE_URL)
-app.dependency_overrides[get_db] = override_get_db
 
 client = TestClient(app)
 
@@ -18,7 +11,7 @@ client = TestClient(app)
 @pytest.fixture(scope='session', autouse=True)
 def setup_database():
 
-    session_maker = _get_fastapi_sessionmaker(TEST_SQLALCHEMY_DATABASE_URL)
+    session_maker = _get_fastapi_sessionmaker()
     models.Base.metadata.bind = session_maker.cached_engine
     models.Base.metadata.create_all()
 

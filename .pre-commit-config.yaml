@@ -31,6 +31,14 @@ repos:
     -   id: mypy
         name: mypy
         entry: mypy
-#        args: [.]
         language: system
         types: [file, python]
+# https://github.com/pre-commit/pre-commit/issues/761#issuecomment-394167542
+-   repo: local
+    hooks:
+    -   id: pytest
+        name: pytest
+        entry: python -m pytest
+        language: system
+        pass_filenames: false
+        always_run: true
