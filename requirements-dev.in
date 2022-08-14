@@ -1,6 +1,7 @@
 -c requirements.txt
 pre-commit
 pytest
+pytest-cov
 pytest-dotenv
 requests
 mypy

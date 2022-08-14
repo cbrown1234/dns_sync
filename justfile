@@ -5,7 +5,7 @@ setup-dev:
     pre-commit install
 
 test:
-    python -m pytest
+    python -m pytest --cov=app tests/
 
 run:
     uvicorn app.main:app
