@@ -2,7 +2,8 @@ import pytest
 from fastapi.testclient import TestClient
 
 from app import models
-from app.database import _get_fastapi_sessionmaker
+from app.crud import delete_all_dns_records
+from app.database import _get_fastapi_sessionmaker, get_db
 from app.main import app
 
 client = TestClient(app)
@@ -65,3 +66,53 @@ def test_get_dns_records_end_empty():
     response = client.get('/dns-records')
     assert response.status_code == 200
     assert response.json() == [dict(to_delete=True, **record)]
+
+
+def test_delete_all():
+    session = get_db().__next__()
+    delete_all_dns_records(session)
+
+
+records = [
+    {
+        'type': 'CNAME',
+        'name': 'test-1.example.com',
+        'content': '0.0.0.0',
+        'ttl': '1',
+        'proxied': True,
+        'owner': 'test',
+    },
+    {
+        'type': 'CNAME',
+        'name': 'test-2.example.com',
+        'content': '0.0.0.0',
+        'ttl': '1',
+        'proxied': True,
+        'owner': 'test',
+    },
+]
+
+
+def test_upsert_dns_record_list():
+    response = client.patch('/dns-records', json=records)
+    print(response.json())
+    assert response.status_code == 200
+    assert response.json() == records
+
+
+def test_get_dns_records_list():
+    response = client.get('/dns-records')
+    assert response.status_code == 200
+    assert response.json() == [dict(to_delete=False, **r) for r in records]
+
+
+def test_delete_dns_record_owner():
+    response = client.delete('/owner/test/dns-records')
+    assert response.status_code == 200
+    assert response.json() == {'deleted': True}
+
+
+def test_get_dns_records_end_empty_list():
+    response = client.get('/dns-records')
+    assert response.status_code == 200
+    assert response.json() == [dict(to_delete=True, **r) for r in records]
